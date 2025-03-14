@@ -7,7 +7,7 @@
         <Badge variant="outline" class="text-sm px-4 py-1">
           🗺️ Интерактивная карта
         </Badge>
-        <h1 class="text-4xl font-bold mt-4">Интерактивная карта</h1>
+        <h1 class="text-4xl font-bold mt-4">Куда бежим?</h1>
       </div>
       <!-- Карточка с картой -->
       <div class="flex items-center justify-center p-4">

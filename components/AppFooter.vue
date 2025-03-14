@@ -1,5 +1,5 @@
 <template>
-  <footer class="border-t fixed bottom-0 z-40 w-full bg-white dark:bg-neutral-950 shadow-md">
+  <footer class="border-t  bottom-0 z-40 w-full bg-white dark:bg-neutral-950 p-4 shadow-md">
     <Container>
       <div class="flex flex-col md:flex-row items-center justify-between h-16 px-4">
         <!-- Авторские права -->
@@ -20,14 +20,14 @@
           </Button>
           <Button variant="link" size="sm" as-child>
             <a
-                href="https://discord.gg/your-discord-link"
+                href="https://discord.gg/Ykfhf46sxB"
                 target="_blank"
                 rel="noopener noreferrer"
             >
               Discord
             </a>
           </Button>
-          <Button variant="link" size="sm" as-child>
+<!--          <Button variant="link" size="sm" as-child>
             <a
                 href="/docs"
             >
@@ -40,7 +40,7 @@
             >
               Команда
             </a>
-          </Button>
+          </Button>-->
         </nav>
       </div>
     </Container>
