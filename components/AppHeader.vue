@@ -1,6 +1,6 @@
 <template>
   <header class="border-b sticky top-0 z-50 bg-white dark:bg-neutral-950 shadow-md">
-    <Container>
+    <Index>
       <nav class="flex items-center justify-between h-16">
         <!-- Логотип -->
         <NuxtLink to="/" class="flex items-center gap-2 font-bold">
@@ -58,7 +58,7 @@
           <ThemeToggle />
         </div>
       </div>
-    </Container>
+    </Index>
   </header>
 </template>
 
@@ -66,7 +66,7 @@
 import { ref } from 'vue'
 import { BadgeHelp, Menu } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
-import Container from '@/components/ui/container/Container.vue'
+import Index from '~/components/ui/container/index.vue'
 import ThemeToggle from '@/components/ThemeToggle.vue'
 
 const menuOpen = ref(false)

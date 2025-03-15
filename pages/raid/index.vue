@@ -178,12 +178,12 @@
                   <!-- Полностью разрушенные стены -->
                   <div v-for="wall in multiFullWallsDestroyed" :key="'full-' + wall">
                     <p>Стена {{ wall }}: 100%</p>
-                    <ProgressBar :value="100" class="mt-2" />
+                    <Index :value="100" class="mt-2" />
                   </div>
                   <!-- Частично разрушенная стена -->
                   <div v-if="multiRemainingDamage > 0">
                     <p>Стена {{ multiFullWallsDestroyed + 1 }}: {{ ((multiRemainingDamage / multiWallHealth) * 100).toFixed(2) }}%</p>
-                    <ProgressBar :value="((multiRemainingDamage / multiWallHealth) * 100)" class="mt-2" />
+                    <Index :value="((multiRemainingDamage / multiWallHealth) * 100)" class="mt-2" />
                   </div>
                 </div>
               </div>
@@ -214,7 +214,7 @@ import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '~/components/ui/select';
 import { Badge } from '~/components/ui/badge';
-import ProgressBar from '~/components/ui/ProgressBar.vue';
+import Index from '~/components/ui/ProgressBar/index.vue';
 import WeaponSelect from '~/components/WeaponSelect.vue';
 
 // Интерфейсы

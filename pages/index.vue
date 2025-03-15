@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto px-4 py-12 md:py-24">
-    <!-- Hero Section -->    <Analytics/>
+    <!-- Hero Section -->
     <section class="text-center">
       <h1 class="text-5xl font-bold tracking-tight sm:text-6xl text-gray-900 dark:text-white">
         Полезные инструменты для <span class="text-red-600">DayZ</span>
@@ -58,7 +58,6 @@
 </template>
 
 <script setup lang="ts">
-import { Analytics } from '@vercel/analytics/nuxt'
 
 import { Sparkles, ShieldCheck, Clock, Lock } from 'lucide-vue-next'
 
