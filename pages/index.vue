@@ -47,7 +47,7 @@
           </CardContent>
           <CardFooter>
             <Button as-child size="sm">
-              <NuxtLink to="tool.link">Перейти</NuxtLink>
+              <NuxtLink :to="tool.link">Перейти</NuxtLink>
             </Button>
           </CardFooter>
         </Card>
