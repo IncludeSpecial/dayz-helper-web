@@ -1,1 +1,4 @@
+User-agent: *
+Allow: /
 
+Sitemap: https://team.switty.ru/sitemap.xml

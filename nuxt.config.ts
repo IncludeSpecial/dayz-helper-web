@@ -34,13 +34,5 @@ export default defineNuxtConfig({
       mode: 'out-in',
     },
   },
-  nitro: {
-    prerender: {
-      crawlLinks: true,
-      routes: [
-        '/',
-        '/rss.xml',
-      ],
-    },
-  },
+
 })
