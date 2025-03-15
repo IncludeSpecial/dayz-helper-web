@@ -1,7 +1,7 @@
 <template>
-  <footer class="fixed bottom-0 left-0 z-20 w-full p-4 bg-neutral-100 border-t border-neutral-200 shadow-sm md:flex md:items-center md:justify-between md:p-6 dark:bg-neutral-900 dark:border-neutral-600">
+  <footer class="fixed bottom-0 left-0 z-20 w-full py-1 bg-neutral-100 border-t border-neutral-200 shadow-sm md:flex md:items-center md:justify-between md:p-6 dark:bg-neutral-900 dark:border-neutral-600">
     <Container>
-      <div class="flex flex-col md:flex-row items-center justify-between gap-4 h-16 px-4">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4  px-4">
         <!-- Авторские права -->
         <div class="flex items-center gap-2 text-sm text-muted-foreground">
           <span>© {{ new Date().getFullYear() }} DayZ Helper | IncludeSpecial | Team</span>

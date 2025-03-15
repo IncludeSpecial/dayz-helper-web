@@ -3,7 +3,7 @@
 
     <AppHeader/>
 
-  <main class="pb-8">
+  <main class="pb-16">
     <slot/>
   </main>
 
