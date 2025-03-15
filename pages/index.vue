@@ -1,6 +1,5 @@
 <template>
-  <AppHeader />
-  <main class="container mx-auto px-4 py-12 md:py-24">
+  <div class="container mx-auto px-4 py-12 md:py-24">
     <!-- Hero Section -->
     <section class="text-center">
       <h1 class="text-5xl font-bold tracking-tight sm:text-6xl text-gray-900 dark:text-white">
@@ -48,14 +47,14 @@
           </CardContent>
           <CardFooter>
             <Button as-child size="sm">
-              <NuxtLink :to="tool.link">Перейти</NuxtLink>
+              <NuxtLink to="tool.link">Перейти</NuxtLink>
             </Button>
           </CardFooter>
         </Card>
       </div>
     </section>
-  </main>
-  <AppFooter />
+  </div>
+
 </template>
 
 <script setup lang="ts">

@@ -41,7 +41,7 @@
       </nav>
 
       <!-- Мобильное меню -->
-      <div v-if="menuOpen" class="md:hidden absolute top-16 left-0 w-full bg-white dark:bg-neutral-950 shadow-md">
+      <div v-if="menuOpen" class="md:hidden absolute top-16 left-0 w-full  bg-neutral-100 border-b border-neutral-200  dark:bg-neutral-950 dark:border-neutral-600 shadow-md">
         <div class="flex flex-col items-start gap-4 p-4">
           <NuxtLink to="/generator" class="w-full text-lg" @click="menuOpen = false">
             Генератор

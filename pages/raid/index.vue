@@ -1,6 +1,6 @@
 <template>
-  <AppHeader />
-  <main class="container mx-auto px-4 py-12">
+
+  <div class="container mx-auto px-4 py-12">
     <!-- Центральный информационный блок -->
     <div class="max-w-2xl mx-auto text-center mb-8">
       <Badge variant="outline" class="text-sm px-4 py-1">⚔️ Калькулятор рейда</Badge>
@@ -97,8 +97,8 @@
         </CardContent>
       </Card>
     </div>
-  </main>
-  <AppFooter />
+  </div>
+
 </template>
 
 <script setup lang="ts">

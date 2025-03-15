@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col min-h-screen">
-    <AppHeader />
-    <main class="container mx-auto px-4 py-12">
+
+    <div class="container mx-auto px-4 py-12">
       <!-- Информационный блок -->
       <div class="max-w-2xl mx-auto text-center mb-8">
         <Badge variant="outline" class="text-sm px-4 py-1">
@@ -15,13 +15,12 @@
           <div class="h-[65vh] rounded-lg overflow-hidden">
             <iframe
                 src="https://dayz.xam.nu/"
-                frameborder="0"
                 class="w-full h-full"
             ></iframe>
           </div>
         </Card>
       </div>
-    </main>
-    <AppFooter />
+    </div>
+
   </div>
 </template>

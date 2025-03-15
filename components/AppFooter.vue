@@ -1,10 +1,9 @@
 <template>
-  <footer class="border-t  bottom-0 z-40 w-full bg-white dark:bg-neutral-950 p-4 shadow-md">
+  <footer class="fixed bottom-0 left-0 z-20 w-full p-4 bg-neutral-100 border-t border-neutral-200 shadow-sm md:flex md:items-center md:justify-between md:p-6 dark:bg-neutral-900 dark:border-neutral-600">
     <Container>
-      <div class="flex flex-col md:flex-row items-center justify-between h-16 px-4">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4 h-16 px-4">
         <!-- Авторские права -->
         <div class="flex items-center gap-2 text-sm text-muted-foreground">
-          <LockKeyhole class="w-4 h-4" />
           <span>© {{ new Date().getFullYear() }} DayZ Helper | IncludeSpecial | Team</span>
         </div>
         <!-- Навигация -->
@@ -48,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { LockKeyhole } from 'lucide-vue-next'
+
 import { Button } from '@/components/ui/button'
 import Container from '@/components/ui/container/Container.vue'
 </script>

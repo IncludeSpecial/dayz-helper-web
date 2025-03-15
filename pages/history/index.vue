@@ -1,6 +1,6 @@
 <template>
-  <AppHeader />
-  <main class="container mx-auto px-4 py-12">
+
+  <div class="container mx-auto px-4 py-12">
     <!-- Централизованный информационный блок -->
     <div class="max-w-2xl mx-auto text-center mb-8">
       <Badge variant="outline" class="text-sm px-4 py-1">📜 История паролей</Badge>
@@ -48,8 +48,8 @@
     <div v-else class="text-center min-h-[60vh] text-gray-500">
       История пуста.
     </div>
-  </main>
-  <AppFooter />
+  </div>
+
 </template>
 
 <script setup lang="ts">

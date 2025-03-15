@@ -1,6 +1,6 @@
 <template>
-  <AppHeader/>
-  <main class="container mx-auto px-4 py-12">
+
+  <div class="container mx-auto px-4 py-12">
   <div class="max-w-2xl mx-auto text-center">
     <Badge variant="outline" class="text-sm px-4 py-1">🔑 Генератор паролей</Badge>
     <h1 class="text-4xl font-bold mt-4">Сгенерирует случайные пароли</h1>
@@ -147,8 +147,8 @@
       </DialogContent>
     </Dialog>
   </div>
-  </main>
-  <AppFooter/>
+  </div>
+
 </template>
 
 <script setup lang="ts">
