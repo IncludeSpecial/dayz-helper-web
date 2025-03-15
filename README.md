@@ -1,75 +1,70 @@
-# Nuxt Minimal Starter
+# DayZ Helper
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+[![DayZ Helper Logo](./assets/logo.png)](https://github.com/IncludeSpecial/dayz-helper-web)
 
-## Setup
+## О проекте / About
 
-Make sure to install dependencies:
+**RU:**  
+DayZ Helper — это набор инструментов для выживания в DayZ, включающий генератор паролей, калькулятор рейда, интерактивную карту и многое другое. Проект создан для того, чтобы помочь игрокам быстро и эффективно управлять ресурсами и планировать рейды.
 
-```bash
-# npm
-npm install
+**EN:**  
+DayZ Helper is a collection of survival tools for DayZ, including a password generator, raid calculator, interactive map, and more. This project is designed to help players manage resources and plan raids quickly and effectively.
 
-# pnpm
-pnpm install
+---
 
-# yarn
-yarn install
+## Функциональность / Features
 
-# bun
-bun install
-```
+### RU:
+- **Генератор паролей:** Создавайте безопасные пароли для ваших баз и замков.
+- **Калькулятор рейда:** Рассчитайте необходимые ресурсы для успешного рейда.
+- **Интерактивная карта:** Планируйте рейды с помощью детальной карты.
+- **История паролей:** Храните и управляйте паролями удобно и безопасно.
 
-## Development Server
+### EN:
+- **Password Generator:** Create secure passwords for your bases and locks.
+- **Raid Calculator:** Calculate the necessary resources for a successful raid.
+- **Interactive Map:** Plan your raids using a detailed map.
+- **Password History:** Store and manage your passwords safely and conveniently.
 
-Start the development server on `http://localhost:3000`:
+---
 
-```bash
-# npm
-npm run dev
+## Скриншоты / Screenshots
 
-# pnpm
-pnpm dev
+![Интерфейс генератора паролей](./assets/screenshot1.png)  
+*Пример интерфейса генератора паролей / Example of the password generator interface.*
 
-# yarn
-yarn dev
+![Интерфейс калькулятора рейда](./assets/screenshot2.png)  
+*Пример интерфейса калькулятора рейда / Example of the raid calculator interface.*
 
-# bun
-bun run dev
-```
+![Интерфейс игровой карты](./assets/screenshot3.png)  
+*Пример интерфейса игровой карты / Example of the game map interface.*
 
-## Production
+![Интерфейс истории паролей](./assets/screenshot4.png)  
+*Пример интерфейса истории паролей / Example of the history password interface.*
 
-Build the application for production:
 
-```bash
-# npm
-npm run build
+---
 
-# pnpm
-pnpm build
+## Установка / Installation
 
-# yarn
-yarn build
+### RU:
+1. Склонируйте репозиторий:
+   ```bash 
+   git clone https://github.com/IncludeSpecial/dayz-helper-web.git 
+   ```
 
-# bun
-bun run build
-```
+2. Перейдите в директорию проекта и установите зависимости:
+   ```bash  
+   cd dayz-helper-web
+   npm install
 
-Locally preview production build:
+   ```
+3. Запустите сервер разработки:
+   ```bash  
+   npm run dev
+   ```
 
-```bash
-# npm
-npm run preview
+## Использование / Usage
+Откройте приложение в браузере по адресу http://localhost:3000 и используйте навигацию для доступа к различным инструментам.
 
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+Open the application in your browser at http://localhost:3000 and use the navigation menu to access different tools.
