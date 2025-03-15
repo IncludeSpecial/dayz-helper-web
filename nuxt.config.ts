@@ -2,7 +2,11 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss', 'shadcn-nuxt'],
+  modules: [
+    '@nuxtjs/tailwindcss',
+    'shadcn-nuxt',
+    '@nuxtjs/sitemap',
+  ],
   shadcn: {
     /**
      * Prefix for all the imported component
@@ -14,9 +18,29 @@ export default defineNuxtConfig({
      */
     componentDir: './components/ui'
   },
-  routeRules: {
-    '/history': { ssr: false },
-    '/privacy': { ssr: false },
-    '/terms': { ssr: false }
-  }
+  app: {
+    head: {
+      charset: 'utf-16',
+      viewport: 'width=device-width,initial-scale=1',
+      title: "DayZ Helper",
+      titleTemplate: `%s - Ваш новый лучший помощник по игре DayZ`,
+    },
+    pageTransition: {
+      name: 'page',
+      mode: 'out-in',
+    },
+    layoutTransition: {
+      name: 'layout',
+      mode: 'out-in',
+    },
+  },
+  nitro: {
+    prerender: {
+      crawlLinks: true,
+      routes: [
+        '/',
+        '/rss.xml',
+      ],
+    },
+  },
 })
