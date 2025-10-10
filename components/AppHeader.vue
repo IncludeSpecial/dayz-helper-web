@@ -1,7 +1,7 @@
 <template>
   <header class="border-b sticky top-0 z-50 bg-white dark:bg-neutral-950 shadow-md">
     <Index>
-      <nav class="flex items-center justify-between h-16">
+      <nav class="flex items-center justify-between h-16" aria-label="Главная навигация">
         <!-- Логотип -->
         <NuxtLink to="/" class="flex items-center gap-2 font-bold">
           <BadgeHelp class="w-6 h-6 text-primary" />
@@ -11,23 +11,23 @@
         <!-- Десктопное меню -->
         <div class="hidden md:flex justify-between items-center gap-4">
 
-          <Button variant="outline" as-child>
-            <NuxtLink to="/raid" class="flex items-center gap-2 font-bold">
+          <Button :variant="isActive('/raid') ? 'default' : 'outline'" as-child>
+            <NuxtLink to="/raid" class="flex items-center gap-2 font-bold" aria-current="page" :aria-current="isActive('/raid') ? 'page' : undefined">
               Калькулятор рейда
             </NuxtLink>
           </Button>
-          <Button variant="outline" as-child>
-            <NuxtLink to="/map" class="flex items-center gap-2 font-bold">
+          <Button :variant="isActive('/map') ? 'default' : 'outline'" as-child>
+            <NuxtLink to="/map" class="flex items-center gap-2 font-bold" :aria-current="isActive('/map') ? 'page' : undefined">
               Карта
             </NuxtLink>
           </Button>
-          <Button variant="outline" as-child>
-            <NuxtLink to="/generator" class="flex items-center gap-2 font-bold">
+          <Button :variant="isActive('/generator') ? 'default' : 'outline'" as-child>
+            <NuxtLink to="/generator" class="flex items-center gap-2 font-bold" :aria-current="isActive('/generator') ? 'page' : undefined">
               Генератор
             </NuxtLink>
           </Button>
-          <Button variant="ghost" as-child>
-            <NuxtLink to="/history" class="flex items-center gap-2 font-bold">
+          <Button :variant="isActive('/history') ? 'default' : 'ghost'" as-child>
+            <NuxtLink to="/history" class="flex items-center gap-2 font-bold" :aria-current="isActive('/history') ? 'page' : undefined">
               История
             </NuxtLink>
           </Button>
@@ -35,24 +35,24 @@
         </div>
 
         <!-- Кнопка меню для мобильных -->
-        <button @click="menuOpen = !menuOpen" class="md:hidden p-2">
+        <button @click="menuOpen = !menuOpen" class="md:hidden p-2" :aria-expanded="menuOpen" aria-controls="mobile-menu" aria-label="Открыть меню">
           <Menu class="w-6 h-6 text-primary" />
         </button>
       </nav>
 
       <!-- Мобильное меню -->
-      <div v-if="menuOpen" class="md:hidden absolute top-16 left-0 w-full  bg-neutral-100 border-b border-neutral-200  dark:bg-neutral-950 dark:border-neutral-600 shadow-md">
+      <div v-if="menuOpen" id="mobile-menu" class="md:hidden absolute top-16 left-0 w-full  bg-neutral-100 border-b border-neutral-200  dark:bg-neutral-950 dark:border-neutral-600 shadow-md">
         <div class="flex flex-col items-start gap-4 p-4">
-          <NuxtLink to="/generator" class="w-full text-lg" @click="menuOpen = false">
+          <NuxtLink to="/generator" class="w-full text-lg" @click="menuOpen = false" :aria-current="isActive('/generator') ? 'page' : undefined">
             Генератор
           </NuxtLink>
-          <NuxtLink to="/raid" class="w-full text-lg" @click="menuOpen = false">
+          <NuxtLink to="/raid" class="w-full text-lg" @click="menuOpen = false" :aria-current="isActive('/raid') ? 'page' : undefined">
             Калькулятор рейда
           </NuxtLink>
-          <NuxtLink to="/map" class="w-full text-lg" @click="menuOpen = false">
+          <NuxtLink to="/map" class="w-full text-lg" @click="menuOpen = false" :aria-current="isActive('/map') ? 'page' : undefined">
             Карта
           </NuxtLink>
-          <NuxtLink to="/history" class="w-full text-lg" @click="menuOpen = false">
+          <NuxtLink to="/history" class="w-full text-lg" @click="menuOpen = false" :aria-current="isActive('/history') ? 'page' : undefined">
             История
           </NuxtLink>
           <ThemeToggle />
@@ -63,11 +63,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { BadgeHelp, Menu } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import Index from '~/components/ui/container/index.vue'
 import ThemeToggle from '@/components/ThemeToggle.vue'
 
 const menuOpen = ref(false)
+
+const route = useRoute()
+const isActive = (path: string) => computed(() => route.path === path).value
 </script>

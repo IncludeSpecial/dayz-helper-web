@@ -20,7 +20,7 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      charset: 'utf-16',
+      charset: 'utf-8',
       viewport: 'width=device-width,initial-scale=1',
       title: "DayZ Helper",
       titleTemplate: `%s - Ваш новый лучший помощник по игре DayZ`,
@@ -34,5 +34,15 @@ export default defineNuxtConfig({
       mode: 'out-in',
     },
   },
-
+  site: {
+    url: process.env.NUXT_PUBLIC_SITE_URL || 'https://dayz-helper.example.com',
+    name: 'DayZ Helper'
+  },
+  sitemap: {
+    siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://dayz-helper.example.com',
+    defaults: {
+      priority: 0.7,
+      changefreq: 'weekly'
+    }
+  }
 })
