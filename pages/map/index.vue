@@ -1,55 +1,75 @@
 <template>
-  <div class="flex flex-col min-h-screen">
+  <PageContainer>
+    <PageHeader
+      title="Интерактивная карта"
+      description="DayZ (dayz.xam.nu). Откройте в новой вкладке или на весь экран."
+      back-to="/"
+      back-label="На главную"
+    />
 
-    <div class="container mx-auto px-4 py-12">
-      <!-- Информационный блок -->
-      <div class="max-w-2xl mx-auto text-center mb-8">
-        <Badge variant="outline" class="text-sm px-4 py-1">
-          🗺️ Интерактивная карта
-        </Badge>
-        <h1 class="text-4xl font-bold mt-4">Куда бежим?</h1>
-      </div>
-      <!-- Карточка с картой -->
-      <div class="flex items-center justify-center p-4">
-        <Card class="w-full shadow-lg">
-          <div class="flex items-center justify-between px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
-            <div class="text-sm text-neutral-600 dark:text-neutral-300">Карта DayZ (внешний ресурс)</div>
-            <div class="flex items-center gap-2">
-              <Button size="sm" variant="outline" @click="reloadMap">Обновить</Button>
-              <Button size="sm" @click="toggleFullscreen">На весь экран</Button>
-            </div>
-          </div>
-          <div class="h-[65vh] md:h-[75vh] rounded-b-lg overflow-hidden" ref="mapContainer">
-            <iframe
-                :key="iframeKey"
-                src="https://dayz.xam.nu/"
-                class="w-full h-full"
-            ></iframe>
-          </div>
-        </Card>
-      </div>
-    </div>
+    <section class="rounded-xl border border-border bg-card overflow-hidden dark:border-primary/20" aria-labelledby="map-title">
+      <div id="map-title" class="sr-only">Карта DayZ</div>
 
-  </div>
+      <!-- Панель действий -->
+      <div class="flex flex-wrap items-center justify-between gap-3 px-4 py-3 border-b border-border bg-muted/20 dark:bg-muted/10">
+        <span class="text-sm text-muted-foreground">dayz.xam.nu</span>
+        <div class="flex flex-wrap items-center gap-2">
+          <Button size="sm" variant="outline" type="button" @click="openInNewTab">
+            В новой вкладке
+          </Button>
+          <Button size="sm" variant="outline" type="button" @click="reloadMap">
+            Обновить
+          </Button>
+          <Button size="sm" type="button" @click="toggleFullscreen">
+            На весь экран
+          </Button>
+        </div>
+      </div>
+
+      <!-- Карта -->
+      <div
+        ref="mapContainer"
+        class="relative h-[65vh] min-h-[320px] md:h-[75vh] bg-muted/30"
+      >
+        <iframe
+          :key="iframeKey"
+          :src="MAP_URL"
+          class="absolute inset-0 w-full h-full border-0"
+          loading="lazy"
+          title="Интерактивная карта DayZ"
+        />
+      </div>
+    </section>
+
+    <p class="mt-4 text-center text-xs text-muted-foreground">
+      Карта открывается с внешнего сайта. Для полноэкранного режима нажмите кнопку выше.
+    </p>
+  </PageContainer>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { Card } from '~/components/ui/card'
 import { Button } from '~/components/ui/button'
-import { Badge } from '~/components/ui/badge'
 
 useSeoMeta({
-  title: 'DayZ Helper — Карта',
+  title: 'Карта',
   description: 'Интерактивная карта DayZ в отдельном окне с удобным полноэкранным режимом.'
 })
 
+const MAP_URL = 'https://dayz.xam.nu/'
 const mapContainer = ref<HTMLElement | null>(null)
-const iframeKey = ref<number>(0)
-const reloadMap = () => { iframeKey.value++ }
+const iframeKey = ref(0)
+
+function reloadMap () {
+  iframeKey.value += 1
+}
+
+function openInNewTab () {
+  window.open(MAP_URL, '_blank', 'noopener,noreferrer')
+}
 
 let isFullscreen = false
-const toggleFullscreen = () => {
+function toggleFullscreen () {
   const el = mapContainer.value
   if (!el) return
   if (!isFullscreen) {
@@ -61,16 +81,16 @@ const toggleFullscreen = () => {
   }
 }
 
-const onFsChange = () => {
+function onFullscreenChange () {
   if (!document.fullscreenElement) {
     isFullscreen = false
   }
 }
 
 onMounted(() => {
-  document.addEventListener('fullscreenchange', onFsChange)
+  document.addEventListener('fullscreenchange', onFullscreenChange)
 })
 onBeforeUnmount(() => {
-  document.removeEventListener('fullscreenchange', onFsChange)
+  document.removeEventListener('fullscreenchange', onFullscreenChange)
 })
 </script>

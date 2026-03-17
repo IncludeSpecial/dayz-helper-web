@@ -5,9 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue'
-
-const props = defineProps({
+defineProps({
   value: {
     type: Number,
     required: true,
@@ -20,14 +18,18 @@ const props = defineProps({
 .progress-bar {
   width: 100%;
   height: 10px;
-  background-color: #e0e0e0;
+  background: hsl(var(--muted));
   border-radius: 10px;
   overflow: hidden;
 }
 
 .progress-bar-inner {
   height: 100%;
-  background-color: #4caf50;
+  background: hsl(var(--primary));
   transition: width 0.3s ease;
+}
+
+.dark .progress-bar-inner {
+  box-shadow: 0 0 12px hsl(var(--primary) / 0.5);
 }
 </style>

@@ -1,303 +1,271 @@
 <template>
+  <PageContainer>
+    <PageHeader
+      title="Генератор паролей"
+      description="Цифровые пароли для замков и дверей. Генерация в браузере, данные никуда не отправляются."
+      back-to="/"
+      back-label="На главную"
+    />
 
-  <div class="container mx-auto px-4 py-12">
-  <div class="max-w-2xl mx-auto text-center">
-    <Badge variant="outline" class="text-sm px-4 py-1">🔑 Генератор паролей</Badge>
-    <h1 class="text-4xl font-bold mt-4">Сгенерирует случайные пароли</h1>
-    <p class="text-gray-500 dark:text-gray-400 mt-2">
-      Выберите разрядность и количество, чтобы сгенерировать его для ваших нужд.
-    </p>
-  </div>
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 p-4">
-    <!-- Левая колонка: форма (sticky) -->
-    <div class="lg:col-span-1">
-      <Card class="sticky top-24">
-        <CardHeader>
-          <CardTitle>Параметры генерации</CardTitle>
-        </CardHeader>
-        <CardContent>
-        <!-- Быстрые пресеты -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div class="space-y-2">
-            <Label>Быстрый выбор длины</Label>
-            <div class="flex flex-wrap gap-2">
-              <Button v-for="n in [3,4,5,6]" :key="'len-'+n" variant="outline" size="sm" @click="length = n" :class="length === n ? 'bg-primary text-white' : ''">{{ n }}</Button>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Форма -->
+      <aside class="lg:col-span-1" aria-label="Параметры генерации">
+        <div class="sticky top-24 rounded-xl border border-border bg-card p-5 dark:border-primary/20 dark:shadow-glow">
+          <h2 class="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">Параметры</h2>
+
+          <!-- Длина -->
+          <div class="mb-4">
+            <Label class="text-muted-foreground">Длина (цифр)</Label>
+            <div class="mt-1.5 flex flex-wrap gap-1.5" role="group" aria-label="Быстрый выбор длины">
+              <button
+                v-for="n in [3, 4, 5, 6]"
+                :key="n"
+                type="button"
+                :aria-pressed="length === n"
+                :aria-label="`${n} цифр`"
+                class="h-9 min-w-[2.5rem] rounded-md border px-3 text-sm font-medium transition-colors"
+                :class="length === n ? 'border-primary bg-primary text-primary-foreground' : 'border-input bg-background hover:bg-muted'"
+                @click="length = n"
+              >
+                {{ n }}
+              </button>
             </div>
           </div>
-          <div class="space-y-2">
-            <Label>Быстрый выбор количества</Label>
-            <div class="flex flex-wrap gap-2">
-              <Button v-for="c in [1,5,10,20]" :key="'cnt-'+c" variant="outline" size="sm" @click="count = c" :class="count === c ? 'bg-primary text-white' : ''">{{ c }}</Button>
-            </div>
-          </div>
-          <div class="space-y-2">
-            <Label>Подсказки источника</Label>
-            <div class="flex flex-wrap gap-2">
-              <Button v-for="s in suggestedSources" :key="'src-'+s" variant="outline" size="sm" @click="source = s">{{ s }}</Button>
-            </div>
-          </div>
-        </div>
 
-        <form @submit.prevent="submitForm" class="grid grid-cols-1 gap-4 mb-2">
-          <!-- Длина пароля -->
-          <div class="space-y-2">
-            <Label for="length">Длина пароля</Label>
-            <Select v-model="length">
-              <SelectTrigger>
-                <SelectValue placeholder="Выберите длину" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem v-for="n in [3,4,5,6]" :key="n" :value="n">{{ n }}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <!-- Количество паролей -->
-          <div class="space-y-2">
-            <Label for="count">Количество паролей</Label>
+          <!-- Количество -->
+          <div class="mb-4">
+            <Label class="text-muted-foreground">Количество</Label>
+            <div class="mt-1.5 flex flex-wrap gap-1.5" role="group" aria-label="Быстрый выбор количества">
+              <button
+                v-for="c in [1, 5, 10, 20]"
+                :key="c"
+                type="button"
+                :aria-pressed="count === c"
+                :aria-label="`${c} паролей`"
+                class="h-9 min-w-[2.5rem] rounded-md border px-3 text-sm font-medium transition-colors"
+                :class="count === c ? 'border-primary bg-primary text-primary-foreground' : 'border-input bg-background hover:bg-muted'"
+                @click="count = c"
+              >
+                {{ c }}
+              </button>
+            </div>
             <Input
-                id="count"
-                v-model.number="count"
-                type="number"
-                min="1"
-                max="100"
+              id="count"
+              v-model.number="count"
+              type="number"
+              min="1"
+              max="100"
+              class="mt-2"
+              aria-label="Количество паролей"
             />
           </div>
 
-          <!-- Источник пароля -->
-          <div class="space-y-2">
-            <Label for="source">Источник пароля</Label>
+          <!-- Источник (подпись) -->
+          <div class="mb-4">
+            <Label for="source" class="text-muted-foreground">Подпись (опционально)</Label>
             <Input
-                id="source"
-                v-model="source"
-                placeholder="Например: дверь, гараж, замок"
+              id="source"
+              v-model="source"
+              placeholder="Напр. дверь, гараж"
+              class="mt-1.5"
             />
+            <div v-if="suggestedSources.length" class="mt-2 flex flex-wrap gap-1.5">
+              <button
+                v-for="s in suggestedSources"
+                :key="s"
+                type="button"
+                class="rounded-md border border-input bg-muted/50 px-2.5 py-1 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+                @click="source = s"
+              >
+                {{ s }}
+              </button>
+            </div>
           </div>
 
-          <!-- Кнопка отправки -->
-          <Button type="submit" class="w-full">
-            <Sparkles class="w-4 h-4 mr-2" />
-            Сгенерировать
-          </Button>
-
-          <!-- Вывод ошибок -->
-          <FormMessage v-if="errors.length" class="text-destructive">
-            <div v-for="error in errors" :key="error">{{ error }}</div>
-          </FormMessage>
-          <div v-if="successMessage" class="text-green-600 dark:text-green-400">
-            {{ successMessage }}
-          </div>
-        </form>
-        </CardContent>
-      </Card>
-    </div>
-
-    <!-- Правая колонка: результаты -->
-    <div class="lg:col-span-2">
-      <!-- Панель фильтрации/сортировки -->
-      <Card class="mb-6">
-        <CardHeader>
-          <CardTitle>Результаты</CardTitle>
-        </CardHeader>
-        <CardContent>
-        <div v-if="passwords.length" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <Label for="filter-source">Фильтр по источнику</Label>
-            <Input id="filter-source" :value="filterSource" @input="onFilterInput" placeholder="Например: дверь" />
-          </div>
-          <div>
-            <Label for="sort-by">Сортировка</Label>
-            <Select v-model="sortBy">
-              <SelectTrigger>
-                <SelectValue placeholder="Поле сортировки" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="date">Дата</SelectItem>
-                <SelectItem value="password">Пароль</SelectItem>
-                <SelectItem value="source">Источник</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label for="sort-dir">Порядок</Label>
-            <Select v-model="sortDir">
-              <SelectTrigger>
-                <SelectValue placeholder="Направление" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="desc">По убыванию</SelectItem>
-                <SelectItem value="asc">По возрастанию</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <form @submit.prevent="submitForm" class="space-y-3">
+            <Button type="submit" class="w-full" size="lg">
+              <Sparkles class="w-4 h-4 mr-2" aria-hidden="true" />
+              Сгенерировать
+            </Button>
+            <div v-if="errors.length" class="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive" role="alert">
+              <ul class="list-disc pl-4 space-y-0.5">
+                <li v-for="err in errors" :key="err">{{ err }}</li>
+              </ul>
+            </div>
+            <div v-if="successMessage" class="rounded-md bg-primary/10 border border-primary/30 px-3 py-2 text-sm font-medium text-primary" role="status" aria-live="polite">
+              {{ successMessage }}
+            </div>
+          </form>
         </div>
-        <!-- QoL: быстрые источники и переключатели -->
-        <div v-if="passwords.length" class="mt-3 flex flex-col gap-3">
-          <div class="flex flex-nowrap gap-2 overflow-x-auto -mx-1 px-1">
-            <Button v-for="s in quickSources" :key="'qsrc-'+s" size="sm" variant="outline" class="shrink-0" @click="applyQuickSource(s)">{{ s }}</Button>
+      </aside>
+
+      <!-- Результаты -->
+      <div class="lg:col-span-2 space-y-4">
+        <!-- Панель: фильтр и сортировка -->
+        <div v-if="passwords.length" class="rounded-xl border border-border bg-card p-4 dark:border-primary/20 dark:shadow-glow">
+          <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
+            <div class="flex-1 min-w-[140px]">
+              <Label for="filter-source" class="text-xs text-muted-foreground">Фильтр по подписи</Label>
+              <Input id="filter-source" :value="filterSource" @input="onFilterInput" placeholder="Поиск..." class="mt-1" />
+            </div>
+            <div class="flex gap-2 flex-wrap">
+              <Select v-model="sortBy">
+                <SelectTrigger class="w-[130px]">
+                  <SelectValue placeholder="Сортировка" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="date">По дате</SelectItem>
+                  <SelectItem value="password">По паролю</SelectItem>
+                  <SelectItem value="source">По подписи</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select v-model="sortDir">
+                <SelectTrigger class="w-[120px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="desc">Убыв.</SelectItem>
+                  <SelectItem value="asc">Возр.</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button variant="ghost" size="sm" @click="clearFilter">Сбросить</Button>
+            </div>
           </div>
-          <div class="flex flex-wrap items-center gap-4 text-sm">
+          <div v-if="quickSources.length" class="mt-3 flex flex-wrap gap-1.5">
+            <button
+              v-for="s in quickSources"
+              :key="s"
+              type="button"
+              class="rounded-md border border-border bg-muted/30 px-2 py-1 text-xs hover:bg-muted"
+              @click="applyQuickSource(s)"
+            >
+              {{ s }}
+            </button>
+          </div>
+          <div class="mt-3 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
             <label class="inline-flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" v-model="filterExact" />
+              <input type="checkbox" v-model="filterExact" class="rounded border-input" />
               Точное совпадение
             </label>
             <label class="inline-flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" v-model="filterWithSourceOnly" />
-              Только с источником
+              <input type="checkbox" v-model="filterWithSourceOnly" class="rounded border-input" />
+              Только с подписью
             </label>
-            <div class="ml-auto flex gap-2">
-              <Button size="sm" variant="outline" @click="clearFilter">Сбросить</Button>
-              <Button size="sm" variant="secondary" @click="reapplyFilter">Применить</Button>
-            </div>
           </div>
         </div>
-        <!-- Summary / Empty state -->
-        <div v-if="!passwords.length" class="text-center text-gray-500 dark:text-gray-400 py-10">
-          Пока нет паролей. Сгенерируйте первые в форме слева.
-        </div>
-        <div v-else class="text-sm text-gray-600 dark:text-gray-400 mt-4">
-          Показано: {{ visibleEntries.length }} из {{ passwords.length }}
-        </div>
-        </CardContent>
-      </Card>
 
-      <!-- Результаты -->
-      <div v-if="showResults" class="space-y-6">
-        <Card>
-          <CardContent class="pt-6">
+        <!-- Пустое состояние -->
+        <div v-if="!passwords.length" class="rounded-xl border border-dashed border-border bg-muted/20 p-12 text-center">
+          <KeyRound class="w-12 h-12 mx-auto mb-3 text-muted-foreground/50" aria-hidden="true" />
+          <p class="font-medium text-muted-foreground">Пока нет паролей</p>
+          <p class="text-sm text-muted-foreground mt-1">Задайте параметры слева и нажмите «Сгенерировать».</p>
+        </div>
 
-          <!-- Мобильный список карточек -->
+        <!-- Список паролей -->
+        <div v-else ref="resultsSectionRef" class="space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 text-sm text-muted-foreground">
+            <span>Показано {{ visibleEntries.length }} из {{ passwords.length }}</span>
+            <div class="flex flex-wrap gap-2" role="toolbar" aria-label="Экспорт и действия">
+              <Button as-child variant="outline" size="sm">
+                <a :href="downloadLink.href" :download="downloadLink.download">TXT</a>
+              </Button>
+              <Button as-child variant="outline" size="sm">
+                <a :href="csvLink.href" :download="csvLink.download">CSV</a>
+              </Button>
+              <Button as-child variant="outline" size="sm">
+                <a :href="jsonLink.href" :download="jsonLink.download">JSON</a>
+              </Button>
+              <input id="jsonImport" type="file" accept="application/json" class="hidden" @change="importJson" />
+              <Button variant="outline" size="sm" @click="triggerImport">Импорт</Button>
+              <Button variant="outline" size="sm" @click="copyAll">
+                <Copy class="w-3.5 h-3.5 mr-1.5" aria-hidden="true" />
+                Копировать все
+              </Button>
+              <Button variant="outline" size="sm" class="text-destructive hover:text-destructive" @click="clearPasswords">Очистить</Button>
+              <Button variant="destructive" size="sm" :disabled="selectedIndexes.size === 0" @click="deleteSelected">
+                <Trash2 class="w-3.5 h-3.5 mr-1.5" aria-hidden="true" />
+                Удалить выбранные ({{ selectedIndexes.size }})
+              </Button>
+            </div>
+          </div>
+
+          <!-- Мобильные карточки -->
           <div class="block md:hidden space-y-3">
-            <Card v-for="({ item, originalIndex }, index) in pagedEntries" :key="originalIndex">
-              <CardContent class="pt-4 pb-3">
-                <div class="flex items-start justify-between gap-3 min-w-0">
-                  <div class="flex items-start gap-3 min-w-0">
-                    <input type="checkbox" :checked="selectedIndexes.has(originalIndex)" @change="toggleSelect(originalIndex)" class="mt-1" />
-                    <div>
-                      <div class="text-xs text-gray-500 dark:text-gray-400">#{{ index + 1 }}</div>
-                      <div class="font-mono text-lg font-semibold break-all max-w-full">{{ item.password }}</div>
-                      <div class="text-sm text-gray-600 dark:text-gray-400">{{ item.source || 'Не указано' }}</div>
-                      <div v-if="item.date" class="text-xs text-gray-500 dark:text-gray-500">{{ new Date(item.date).toLocaleString() }}</div>
-                    </div>
+            <div
+              v-for="({ item, originalIndex }) in pagedEntries"
+              :key="originalIndex"
+              class="rounded-xl border border-border bg-card p-4 dark:border-primary/15"
+            >
+              <div class="flex items-start justify-between gap-3">
+                <label class="flex min-w-0 flex-1 cursor-pointer gap-3">
+                  <input type="checkbox" :checked="selectedIndexes.has(originalIndex)" class="mt-1 rounded border-input" @change="toggleSelect(originalIndex)" />
+                  <div class="min-w-0">
+                    <div class="font-mono text-lg font-semibold break-all">{{ item.password }}</div>
+                    <div class="text-sm text-muted-foreground">{{ item.source || '—' }}</div>
+                    <div v-if="item.date" class="text-xs text-muted-foreground mt-0.5">{{ new Date(item.date).toLocaleString() }}</div>
                   </div>
-                  <div class="flex flex-col gap-2">
-                    <Button size="sm" variant="outline" @click="copyToClipboard(item.password)">Копировать</Button>
-                    <Button size="sm" variant="outline" @click="editPassword(originalIndex)">Редактировать</Button>
-                    <Button size="sm" variant="destructive" @click="deletePassword(originalIndex)">Удалить</Button>
-                  </div>
+                </label>
+                <div class="flex shrink-0 flex-col gap-1.5">
+                  <Button size="sm" variant="outline" class="h-8" @click="copyToClipboard(item.password)">Копировать</Button>
+                  <Button size="sm" variant="ghost" class="h-8" @click="editPassword(originalIndex)">
+                    <Pencil class="w-3.5 h-3.5" aria-hidden="true" />
+                  </Button>
+                  <Button size="sm" variant="ghost" class="h-8 text-destructive hover:text-destructive" @click="deletePassword(originalIndex)">
+                    <Trash2 class="w-3.5 h-3.5" aria-hidden="true" />
+                  </Button>
                 </div>
-              </CardContent>
-            </Card>
-
-            <!-- Mobile sticky controls -->
-            <div class="sticky bottom-0 left-0 right-0 bg-white/80 dark:bg-neutral-950/80 backdrop-blur border-t border-neutral-200 dark:border-neutral-800 p-3 flex flex-wrap gap-2 justify-between items-center">
-              <div class="text-sm text-gray-600 dark:text-gray-400">Выбрано: {{ selectedIndexes.size }}</div>
-              <div class="flex flex-nowrap gap-2 overflow-x-auto whitespace-nowrap w-full md:w-auto justify-end">
-                <Button size="sm" variant="outline" @click="copyAll">Копировать все</Button>
-                <Button size="sm" variant="secondary" as-child>
-                  <a :href="csvLink.href" :download="csvLink.download">CSV</a>
-                </Button>
-                <Button size="sm" variant="secondary" as-child>
-                  <a :href="jsonLink.href" :download="jsonLink.download">JSON</a>
-                </Button>
-                <Button size="sm" variant="outline" @click="triggerImport">Импорт</Button>
-                <Button size="sm" variant="destructive" :disabled="selectedIndexes.size === 0" @click="deleteSelected">Удалить выбранные</Button>
               </div>
             </div>
           </div>
 
-          <!-- Таблица: компактная, фиксированный заголовок, скролл (Desktop) -->
-          <div class="hidden md:block overflow-auto max-h-[60vh]">
-            <Table class="min-w-[600px] text-sm">
-              <TableHeader class="sticky top-0 z-10 bg-white dark:bg-neutral-950">
-                <TableRow>
-                  <TableHead class="sticky top-0 z-10 bg-white dark:bg-neutral-950">
-                    <input type="checkbox" :checked="allSelected" @change="toggleSelectAll($event)" />
-                  </TableHead>
-                  <TableHead class="sticky top-0 z-10 bg-white dark:bg-neutral-950">№</TableHead>
-                  <TableHead class="sticky top-0 z-10 bg-white dark:bg-neutral-950">Пароль</TableHead>
-                  <TableHead class="sticky top-0 z-10 bg-white dark:bg-neutral-950">Источник</TableHead>
-                  <TableHead class="sticky top-0 z-10 bg-white dark:bg-neutral-950 min-w-[200px] md:min-w-[300px]">Действия</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow v-for="({ item, originalIndex }, index) in pagedEntries" :key="originalIndex" class="h-10">
-                  <TableCell>
-                    <input type="checkbox" :checked="selectedIndexes.has(originalIndex)" @change="toggleSelect(originalIndex)" />
-                  </TableCell>
-                  <TableCell>{{ index + 1 }}</TableCell>
-                  <TableCell class="font-mono font-medium py-2">{{ item.password }}</TableCell>
-                  <TableCell class="py-2">{{ item.source || 'Не указано' }}</TableCell>
-                  <TableCell>
-                    <div class="flex flex-wrap gap-2 min-w-0">
-                      <Button variant="outline" size="sm" @click="editPassword(originalIndex)">
-                        <Pencil class="w-4 h-4 mr-2" />
-                        Редактировать
-                      </Button>
-                      <Button size="sm" @click="copyToClipboard(item.password)">
-                        <Copy class="w-4 h-4 mr-2" />
-                        Копировать
-                      </Button>
-                      <Button variant="destructive" size="sm" @click="deletePassword(originalIndex)">
-                        <Trash2 class="w-4 h-4 mr-2" />
-                        Удалить
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </div>
-
-          <!-- Управление результатами -->
-          <div class="mt-4">
-            <div class="flex flex-wrap md:flex-nowrap items-stretch gap-2 md:gap-3 overflow-x-auto -mx-1 px-1" role="toolbar" aria-label="Управление результатами">
-              <!-- Группа: Скачивание -->
-              <div class="flex items-stretch gap-2 shrink-0">
-                <Button as-child variant="secondary" size="sm" class="shrink-0">
-                  <a :href="downloadLink.href" :download="downloadLink.download">
-                    <Download class="w-4 h-4 mr-2" /> TXT
-                  </a>
-                </Button>
-                <Button as-child variant="secondary" size="sm" class="shrink-0">
-                  <a :href="csvLink.href" :download="csvLink.download">
-                    <Download class="w-4 h-4 mr-2" /> CSV
-                  </a>
-                </Button>
-                <Button as-child variant="secondary" size="sm" class="shrink-0">
-                  <a :href="jsonLink.href" :download="jsonLink.download">
-                    <Download class="w-4 h-4 mr-2" /> JSON
-                  </a>
-                </Button>
-              </div>
-              <div class="hidden md:block w-px self-stretch bg-neutral-200 dark:bg-neutral-800" />
-              <!-- Группа: Импорт / Копировать -->
-              <div class="flex items-stretch gap-2 shrink-0">
-                <input id="jsonImport" type="file" accept="application/json" class="hidden" @change="importJson" />
-                <Button variant="outline" size="sm" class="shrink-0" @click="triggerImport">Импорт</Button>
-                <Button variant="outline" size="sm" class="shrink-0" @click="copyAll">
-                  <Copy class="w-4 h-4 mr-2" /> Копировать все
-                </Button>
-              </div>
-              <div class="hidden md:block w-px self-stretch bg-neutral-200 dark:bg-neutral-800" />
-              <!-- Группа: Очистка / Удаление -->
-              <div class="flex items-stretch gap-2 shrink-0">
-                <Button variant="destructive" size="sm" class="shrink-0" @click="clearPasswords">
-                  <X class="w-4 h-4 mr-2" /> Очистить
-                </Button>
-                <Button variant="destructive" size="sm" class="shrink-0" @click="deleteSelected" :disabled="selectedIndexes.size === 0">
-                  <Trash2 class="w-4 h-4 mr-2" /> Удалить выбранные
-                </Button>
-              </div>
+          <!-- Десктоп: таблица -->
+          <div class="hidden md:block overflow-hidden rounded-xl border border-border bg-card dark:border-primary/15">
+            <div class="overflow-auto max-h-[50vh]">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead class="w-10">
+                      <input type="checkbox" :checked="allSelected" aria-label="Выбрать все" @change="toggleSelectAll($event)" />
+                    </TableHead>
+                    <TableHead class="w-12">№</TableHead>
+                    <TableHead>Пароль</TableHead>
+                    <TableHead>Подпись</TableHead>
+                    <TableHead class="w-[1%] text-right">Действия</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow v-for="({ item, originalIndex }) in pagedEntries" :key="originalIndex">
+                    <TableCell>
+                      <input type="checkbox" :checked="selectedIndexes.has(originalIndex)" class="rounded border-input" @change="toggleSelect(originalIndex)" />
+                    </TableCell>
+                    <TableCell class="text-muted-foreground">{{ (page - 1) * pageSize + index + 1 }}</TableCell>
+                    <TableCell class="font-mono font-medium">{{ item.password }}</TableCell>
+                    <TableCell class="text-muted-foreground">{{ item.source || '—' }}</TableCell>
+                    <TableCell class="text-right">
+                      <div class="flex justify-end gap-1.5">
+                        <Button size="sm" variant="ghost" class="h-8 w-8 p-0" @click="copyToClipboard(item.password)" title="Копировать">
+                          <Copy class="w-4 h-4" aria-hidden="true" />
+                        </Button>
+                        <Button size="sm" variant="ghost" class="h-8 w-8 p-0" @click="editPassword(originalIndex)" title="Редактировать">
+                          <Pencil class="w-4 h-4" aria-hidden="true" />
+                        </Button>
+                        <Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive hover:text-destructive" @click="deletePassword(originalIndex)" title="Удалить">
+                          <Trash2 class="w-4 h-4" aria-hidden="true" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
             </div>
           </div>
 
           <!-- Пагинация -->
-          <div class="mt-4 flex flex-col md:flex-row items-center justify-between gap-3">
+          <div v-if="totalPages > 1" class="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-muted/20 px-4 py-3">
             <div class="flex items-center gap-2">
-              <Label>На странице</Label>
+              <Label for="page-size" class="text-sm text-muted-foreground">На странице</Label>
               <Select v-model="pageSize">
-                <SelectTrigger class="w-[110px]">
+                <SelectTrigger id="page-size" class="w-20 h-8">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -305,66 +273,58 @@
                 </SelectContent>
               </Select>
             </div>
-            <div class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
-              Страница {{ page }} из {{ totalPages }}
-              <div class="flex items-center gap-2">
-                <Button variant="outline" size="sm" @click="prevPage" :disabled="page <= 1">Назад</Button>
-                <Button variant="outline" size="sm" @click="nextPage" :disabled="page >= totalPages">Вперёд</Button>
-              </div>
+            <span class="text-sm text-muted-foreground">Стр. {{ page }} из {{ totalPages }}</span>
+            <div class="flex gap-2">
+              <Button variant="outline" size="sm" :disabled="page <= 1" @click="prevPage">Назад</Button>
+              <Button variant="outline" size="sm" :disabled="page >= totalPages" @click="nextPage">Вперёд</Button>
             </div>
           </div>
-          </CardContent>
-        </Card>
+        </div>
       </div>
     </div>
 
-    <!-- Модальное окно редактирования -->
+    <!-- Модалка редактирования -->
     <Dialog v-model:open="showEditModal">
-      <DialogContent class="max-w-lg w-full">
+      <DialogContent class="max-w-md">
         <DialogHeader>
           <DialogTitle>Редактировать пароль</DialogTitle>
         </DialogHeader>
-        <div class="space-y-4">
+        <div class="space-y-4 pt-2">
           <div class="space-y-2">
-            <Label>Пароль</Label>
-            <Input v-model="editForm.password" />
+            <Label for="edit-password">Пароль</Label>
+            <Input id="edit-password" v-model="editForm.password" />
           </div>
           <div class="space-y-2">
-            <Label>Источник</Label>
-            <Input v-model="editForm.source" />
+            <Label for="edit-source">Подпись</Label>
+            <Input id="edit-source" v-model="editForm.source" />
           </div>
-          <DialogFooter>
+          <DialogFooter class="gap-2 sm:gap-0">
             <Button @click="saveEdit">Сохранить</Button>
             <Button variant="outline" @click="closeEditModal">Отмена</Button>
           </DialogFooter>
         </div>
       </DialogContent>
     </Dialog>
-  </div>
-  </div>
-
+  </PageContainer>
 </template>
 
 <script setup lang="ts">
-definePageMeta({
-  layout: 'default'
-})
+import type { PasswordEntry } from '~/types/generator'
 
-// Импорт иконок
-import { Copy, Download, Pencil, Sparkles, Trash2, X } from 'lucide-vue-next'
+definePageMeta({ layout: 'default' })
+
+import { Copy, KeyRound, Pencil, Sparkles, Trash2 } from 'lucide-vue-next'
+
+const { passwords, history, defaults, load, savePasswords, saveHistory, saveDefaults } = usePasswordStorage()
 
 const length = ref<number>(3)
 const count = ref<number>(1)
 const source = ref<string>('')
-const passwords = ref<Array<{ password: string; source: string; date?: string }>>([])
 const showResults = ref(false)
 const errors = ref<string[]>([])
 const showEditModal = ref(false)
 const editIndex = ref<number | null>(null)
-const editForm = ref<{ password: string; source: string; date?: string }>({
-  password: '',
-  source: ''
-})
+const editForm = ref<PasswordEntry>({ password: '', source: '' })
 const successMessage = ref<string>('')
 const filterSource = ref<string>('')
 const filterExact = ref<boolean>(false)
@@ -376,6 +336,7 @@ const page = ref<number>(1)
 const pageSizeOptions = [10, 25, 50]
 const pageSize = ref<number>(25)
 let filterTimer: number | undefined
+
 const onFilterInput = (e: Event) => {
   const value = (e.target as HTMLInputElement).value
   if (filterTimer) window.clearTimeout(filterTimer)
@@ -384,24 +345,30 @@ const onFilterInput = (e: Event) => {
     page.value = 1
   }, 250)
 }
-const reapplyFilter = () => { page.value = 1 }
-const clearFilter = () => { filterSource.value = ''; filterExact.value = false; filterWithSourceOnly.value = false; page.value = 1 }
-const applyQuickSource = (s: string) => { filterSource.value = s; page.value = 1 }
+
+const clearFilter = () => {
+  filterSource.value = ''
+  filterExact.value = false
+  filterWithSourceOnly.value = false
+  page.value = 1
+}
+
+const applyQuickSource = (s: string) => {
+  filterSource.value = s
+  page.value = 1
+}
 
 const suggestedSources = computed<string[]>(() => {
-  const saved = JSON.parse(localStorage.getItem('dayz-passwords-history') || '[]') as Array<{ source?: string }>
-  const unique = Array.from(new Set(saved.map(i => (i.source || '').trim()).filter(Boolean)))
+  const unique = Array.from(new Set(history.value.map(i => (i.source || '').trim()).filter(Boolean)))
   return unique.slice(0, 8)
 })
 
-// Быстрые источники: объединяем подсказки + последние введенные в текущей сессии
 const quickSources = computed<string[]>(() => {
   const current = Array.from(new Set(passwords.value.map(p => (p.source || '').trim()).filter(Boolean)))
   const merged = Array.from(new Set([...current, ...suggestedSources.value]))
   return merged.slice(0, 10)
 })
 
-// Видимые пароли с исходными индексами (учёт фильтра и сортировки)
 const visibleEntries = computed(() => {
   const list = passwords.value
     .map((item, originalIndex) => ({ item, originalIndex }))
@@ -413,34 +380,32 @@ const visibleEntries = computed(() => {
       const hay = src.toLowerCase()
       return filterExact.value ? hay === needle : hay.includes(needle)
     })
-
   const compare = (a: any, b: any) => {
     const key = sortBy.value
     const av = (a.item[key] || '').toString()
     const bv = (b.item[key] || '').toString()
     return av.localeCompare(bv)
   }
-
   const sorted = [...list].sort((a, b) => compare(a, b))
   if (sortDir.value === 'desc') sorted.reverse()
   return sorted
 })
 
-// Селекты
 const allSelected = computed(() => selectedIndexes.value.size > 0 && selectedIndexes.value.size === visibleEntries.value.length)
+
 const toggleSelectAll = (e: Event) => {
   const checked = (e.target as HTMLInputElement).checked
   selectedIndexes.value = new Set()
-  if (checked) {
-    visibleEntries.value.forEach((e) => selectedIndexes.value.add(e.originalIndex))
-  }
+  if (checked) visibleEntries.value.forEach(e => selectedIndexes.value.add(e.originalIndex))
 }
-// Пагинация
+
 const totalPages = computed(() => Math.max(1, Math.ceil(visibleEntries.value.length / pageSize.value)))
+
 const pagedEntries = computed(() => {
   const start = (page.value - 1) * pageSize.value
   return visibleEntries.value.slice(start, start + pageSize.value)
 })
+
 const prevPage = () => { if (page.value > 1) page.value -= 1 }
 const nextPage = () => { if (page.value < totalPages.value) page.value += 1 }
 
@@ -449,162 +414,98 @@ const toggleSelect = (originalIndex: number) => {
   else selectedIndexes.value.add(originalIndex)
 }
 
-// Загрузка сохранённых паролей
-onMounted(() => {
-  const saved = localStorage.getItem('dayz-passwords')
-  if (saved) {
-    passwords.value = JSON.parse(saved)
-    showResults.value = true
+const resultsSectionRef = ref<HTMLElement | null>(null)
+
+const downloadLink = ref<{ href: string; download: string }>({ href: '', download: '' })
+const csvLink = ref<{ href: string; download: string }>({ href: '', download: '' })
+const jsonLink = ref<{ href: string; download: string }>({ href: '', download: '' })
+
+function revokeExportUrls() {
+  for (const r of [downloadLink, csvLink, jsonLink]) {
+    if (r.value.href?.startsWith('blob:')) {
+      URL.revokeObjectURL(r.value.href)
+      r.value = { href: '', download: '' }
+    }
   }
-  // Восстановление дефолтов
-  const defaults = JSON.parse(localStorage.getItem('dayz-generator-defaults') || 'null')
-  if (defaults) {
-    if (defaults.length) length.value = defaults.length
-    if (defaults.count) count.value = defaults.count
-    if (defaults.source) source.value = defaults.source
-  }
-})
+}
 
-// Ссылка для скачивания
-const downloadLink = computed(() => {
-  const date = new Date().toISOString().split('T')[0];
-
-  // Заголовки столбцов
-  const noHeader = "№";
-  const passwordHeader = "Пароль";
-  const sourceHeader = "Источник";
-
-  // Вычисляем максимальную ширину для каждого столбца
-  let maxNoWidth = Math.max(noHeader.length, passwords.value.length.toString().length);
-  let maxPasswordWidth = passwordHeader.length;
-  let maxSourceWidth = sourceHeader.length;
-
-  passwords.value.forEach(p => {
-    maxPasswordWidth = Math.max(maxPasswordWidth, p.password.length);
-    const src = p.source || "Без источника";
-    maxSourceWidth = Math.max(maxSourceWidth, src.length);
-  });
-
-  // Функция для создания строки-разделителя
-  const createBorder = () =>
-      `+${'-'.repeat(maxNoWidth + 2)}+${'-'.repeat(maxPasswordWidth + 2)}+${'-'.repeat(maxSourceWidth + 2)}+`;
-
-  const borderLine = createBorder();
-
-  // Формируем содержимое файла
-  let content = "";
-  content += "************************************\n";
-  content += "       DayZ Password Generator      \n";
-  content += "************************************\n\n";
-  content += borderLine + "\n";
-  content += `| ${noHeader.padEnd(maxNoWidth)} | ${passwordHeader.padEnd(maxPasswordWidth)} | ${sourceHeader.padEnd(maxSourceWidth)} |\n`;
-  content += borderLine + "\n";
-
-  passwords.value.forEach((p, index) => {
-    const src = p.source || "Без источника";
-    content += `| ${(index + 1).toString().padEnd(maxNoWidth)} | ${p.password.padEnd(maxPasswordWidth)} | ${src.padEnd(maxSourceWidth)} |\n`;
-  });
-
-  content += borderLine + "\n";
-
-  return {
-    href: URL.createObjectURL(new Blob([content], { type: 'text/plain' })),
-    download: `dayz-passwords-${date}.txt`
-  }
-});
-
-// CSV ссылка
-const csvLink = computed(() => {
-  const date = new Date().toISOString().split('T')[0];
-  const rows = [
-    ['№', 'Пароль', 'Источник', 'Дата'],
-    ...passwords.value.map((p, i) => [String(i + 1), p.password, p.source || 'Без источника', p.date || ''])
-  ];
-  const csv = rows.map(r => r.map(field => `"${(field ?? '').toString().replaceAll('"', '""')}"`).join(',')).join('\n');
-  return {
-    href: URL.createObjectURL(new Blob([csv], { type: 'text/csv' })),
-    download: `dayz-passwords-${date}.csv`
-  }
-})
-
-// JSON ссылка
-const jsonLink = computed(() => {
+function updateExportLinks() {
+  revokeExportUrls()
   const date = new Date().toISOString().split('T')[0]
-  const data = JSON.stringify(passwords.value, null, 2)
-  return {
-    href: URL.createObjectURL(new Blob([data], { type: 'application/json' })),
-    download: `dayz-passwords-${date}.json`
-  }
-})
+  const list = passwords.value
+  const noHeader = '№'
+  const passwordHeader = 'Пароль'
+  const sourceHeader = 'Источник'
+  let maxNoWidth = Math.max(noHeader.length, list.length.toString().length)
+  let maxPasswordWidth = passwordHeader.length
+  let maxSourceWidth = sourceHeader.length
+  list.forEach(p => {
+    maxPasswordWidth = Math.max(maxPasswordWidth, p.password.length)
+    maxSourceWidth = Math.max(maxSourceWidth, (p.source || 'Без источника').length)
+  })
+  const borderLine = `+${'-'.repeat(maxNoWidth + 2)}+${'-'.repeat(maxPasswordWidth + 2)}+${'-'.repeat(maxSourceWidth + 2)}+`
+  let content = '************************************\n       DayZ Password Generator      \n************************************\n\n'
+  content += borderLine + '\n'
+  content += `| ${noHeader.padEnd(maxNoWidth)} | ${passwordHeader.padEnd(maxPasswordWidth)} | ${sourceHeader.padEnd(maxSourceWidth)} |\n`
+  content += borderLine + '\n'
+  list.forEach((p, i) => {
+    const src = (p.source || 'Без источника').padEnd(maxSourceWidth)
+    content += `| ${(i + 1).toString().padEnd(maxNoWidth)} | ${p.password.padEnd(maxPasswordWidth)} | ${src} |\n`
+  })
+  content += borderLine + '\n'
+  downloadLink.value = { href: URL.createObjectURL(new Blob([content], { type: 'text/plain' })), download: `dayz-passwords-${date}.txt` }
+  const rows = [['№', 'Пароль', 'Источник', 'Дата'], ...list.map((p, i) => [String(i + 1), p.password, p.source || 'Без источника', p.date || ''])]
+  const csv = rows.map(r => r.map(f => `"${(f ?? '').toString().replaceAll('"', '""')}"`).join(',')).join('\n')
+  csvLink.value = { href: URL.createObjectURL(new Blob([csv], { type: 'text/csv' })), download: `dayz-passwords-${date}.csv` }
+  jsonLink.value = { href: URL.createObjectURL(new Blob([JSON.stringify(list, null, 2)], { type: 'application/json' })), download: `dayz-passwords-${date}.json` }
+}
 
+watch(passwords, updateExportLinks, { deep: true })
+onBeforeUnmount(revokeExportUrls)
 
-// Генерация паролей
-// Генерация паролей с датой создания
 const generatePasswords = () => {
-  const now = new Date().toISOString(); // Текущая дата в ISO формате
+  const now = new Date().toISOString()
   const newPasswords = Array.from({ length: count.value }, () => ({
     password: Array.from({ length: length.value }, () => Math.floor(Math.random() * 10)).join(''),
     source: source.value,
-    date: now, // Запоминаем дату создания
-  }));
+    date: now
+  }))
+  passwords.value = [...passwords.value, ...newPasswords]
+  savePasswords(passwords.value)
+  saveHistory([...history.value, ...newPasswords])
+  showResults.value = true
+  showSuccess('Пароли сгенерированы')
+}
 
-  // Обновляем текущие пароли
-  passwords.value = [...passwords.value, ...newPasswords];
-  localStorage.setItem('dayz-passwords', JSON.stringify(passwords.value));
-
-  // Добавляем в историю (не удаляем предыдущие записи)
-  const savedHistory = JSON.parse(localStorage.getItem('dayz-passwords-history') || '[]');
-  const updatedHistory = [...savedHistory, ...newPasswords];
-  localStorage.setItem('dayz-passwords-history', JSON.stringify(updatedHistory));
-
-  showResults.value = true;
-  showSuccess('Пароли сгенерированы');
-};
-
-
-
-
-
-// Валидация формы
 const validateForm = () => {
   errors.value = []
-  if (![3,4,5,6].includes(length.value)) {
-    errors.value.push('Длина пароля должна быть от 3 до 6 символов')
-  }
-  if (count.value < 1 || count.value > 100) {
-    errors.value.push('Количество паролей должно быть от 1 до 100')
-  }
+  if (![3, 4, 5, 6].includes(length.value)) errors.value.push('Длина: от 3 до 6 цифр')
+  if (count.value < 1 || count.value > 100) errors.value.push('Количество: от 1 до 100')
   return errors.value.length === 0
 }
 
-// Обработка отправки формы
 const submitForm = () => {
   if (!validateForm()) return
   generatePasswords()
-  // Сохраняем текущие дефолты
-  localStorage.setItem('dayz-generator-defaults', JSON.stringify({ length: length.value, count: count.value, source: source.value }))
+  saveDefaults({ length: length.value, count: count.value, source: source.value })
   source.value = ''
+  nextTick(() => resultsSectionRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
 }
 
-// Копирование в буфер обмена
 const copyToClipboard = async (text: string) => {
   try {
     await navigator.clipboard.writeText(text)
-    showSuccess('Пароль скопирован')
-  } catch (err) {
-    console.error('Ошибка копирования:', err)
-  }
+    showSuccess('Скопировано')
+  } catch (e) { console.error(e) }
 }
 
 const copyAll = async () => {
   if (!passwords.value.length) return
-  const text = passwords.value.map((p, i) => `${i + 1}. ${p.password} — ${p.source || 'Без источника'}`).join('\n')
+  const text = passwords.value.map((p, i) => `${i + 1}. ${p.password} — ${p.source || '—'}`).join('\n')
   try {
     await navigator.clipboard.writeText(text)
     showSuccess('Все пароли скопированы')
-  } catch (err) {
-    console.error('Ошибка копирования:', err)
-  }
+  } catch (e) { console.error(e) }
 }
 
 const showSuccess = (msg: string) => {
@@ -612,61 +513,49 @@ const showSuccess = (msg: string) => {
   setTimeout(() => { successMessage.value = '' }, 2000)
 }
 
-const triggerImport = () => {
-  const input = document.getElementById('jsonImport') as HTMLInputElement | null
-  if (input) input.click()
-}
+const triggerImport = () => document.getElementById('jsonImport')?.click()
 
 const importJson = async (e: Event) => {
   const target = e.target as HTMLInputElement
   const file = target.files?.[0]
   if (!file) return
   try {
-    const text = await file.text()
-    const data = JSON.parse(text)
-    if (!Array.isArray(data)) throw new Error('invalid_format')
-    const normalized = data.map((p: any) => ({
+    const data = JSON.parse(await file.text())
+    if (!Array.isArray(data)) throw new Error('invalid')
+    passwords.value = data.map((p: any) => ({
       password: String(p.password ?? ''),
       source: String(p.source ?? ''),
       date: p.date ? String(p.date) : undefined
     }))
-    passwords.value = normalized
-    localStorage.setItem('dayz-passwords', JSON.stringify(passwords.value))
+    savePasswords(passwords.value)
     showResults.value = passwords.value.length > 0
-    showSuccess('Импорт завершён')
-  } catch (err) {
-    console.error('Импорт JSON не удался', err)
-    errors.value = ['Не удалось импортировать JSON']
-  } finally {
-    // сброс инпута для повторного выбора того же файла
-    target.value = ''
+    showSuccess('Импорт выполнен')
+  } catch {
+    errors.value = ['Неверный формат JSON']
   }
+  target.value = ''
 }
 
-// Очистка только текущих паролей
 const clearPasswords = () => {
-  passwords.value = [];
-  showResults.value = false;
-  localStorage.removeItem('dayz-passwords'); // Удаляем только текущие пароли, а не историю
-};
+  savePasswords([])
+  showResults.value = false
+}
 
 const deletePassword = (index: number) => {
   passwords.value.splice(index, 1)
-  localStorage.setItem('dayz-passwords', JSON.stringify(passwords.value))
-  if (passwords.value.length === 0) showResults.value = false
+  savePasswords(passwords.value)
+  if (!passwords.value.length) showResults.value = false
 }
 
 const deleteSelected = () => {
   if (selectedIndexes.value.size === 0) return
-  const keep = passwords.value.filter((_, idx) => !selectedIndexes.value.has(idx))
-  passwords.value = keep
-  localStorage.setItem('dayz-passwords', JSON.stringify(passwords.value))
+  passwords.value = passwords.value.filter((_, idx) => !selectedIndexes.value.has(idx))
+  savePasswords(passwords.value)
   selectedIndexes.value.clear()
-  if (passwords.value.length === 0) showResults.value = false
-  showSuccess('Выбранные пароли удалены')
+  if (!passwords.value.length) showResults.value = false
+  showSuccess('Удалено')
 }
 
-// Редактирование пароля
 const editPassword = (index: number) => {
   editIndex.value = index
   editForm.value = { ...passwords.value[index] }
@@ -674,17 +563,26 @@ const editPassword = (index: number) => {
 }
 
 const saveEdit = () => {
-  if (editIndex.value !== null) {
-    const prev = passwords.value[editIndex.value]
-    passwords.value[editIndex.value] = { ...prev, ...editForm.value, date: prev.date || editForm.value.date }
-    localStorage.setItem('dayz-passwords', JSON.stringify(passwords.value))
-    showEditModal.value = false
-    showSuccess('Изменения сохранены')
-  }
+  if (editIndex.value === null) return
+  const prev = passwords.value[editIndex.value]
+  passwords.value[editIndex.value] = { ...prev, ...editForm.value, date: prev.date || editForm.value.date }
+  savePasswords(passwords.value)
+  showEditModal.value = false
+  editIndex.value = null
+  showSuccess('Сохранено')
 }
 
 const closeEditModal = () => {
   showEditModal.value = false
   editIndex.value = null
 }
+
+onMounted(() => {
+  load()
+  if (passwords.value.length) showResults.value = true
+  if (defaults.value?.length) length.value = defaults.value.length
+  if (defaults.value?.count) count.value = defaults.value.count
+  if (defaults.value?.source) source.value = defaults.value.source
+  updateExportLinks()
+})
 </script>

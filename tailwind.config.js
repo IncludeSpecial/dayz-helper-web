@@ -4,10 +4,21 @@ export default {
     content: [],
     theme: {
     	extend: {
+    		fontFamily: {
+    			dayz: ['Rajdhani', 'system-ui', 'sans-serif'],
+    			tech: ['Orbitron', 'Rajdhani', 'system-ui', 'sans-serif'],
+    			mono: ['Share Tech Mono', 'ui-monospace', 'monospace']
+    		},
     		borderRadius: {
     			lg: 'var(--radius)',
     			md: 'calc(var(--radius) - 2px)',
     			sm: 'calc(var(--radius) - 4px)'
+    		},
+    		boxShadow: {
+    			'dayz': '0 1px 0 0 hsl(var(--border)), inset 0 1px 0 0 hsl(var(--background) / 0.5)',
+    			'dayz-lg': '0 2px 4px -1px hsl(0 0% 0% / 0.15), 0 4px 8px -2px hsl(0 0% 0% / 0.1)',
+    			'glow': '0 0 20px -5px hsl(var(--primary) / 0.4)',
+    			'glow-lg': '0 0 32px -8px hsl(var(--primary) / 0.35), 0 0 0 1px hsl(var(--primary) / 0.1)'
     		},
     		colors: {
     			background: 'hsl(var(--background))',

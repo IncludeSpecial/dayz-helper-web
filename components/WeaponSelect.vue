@@ -12,19 +12,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '~/components/ui/select';
+import { ref, watch } from 'vue'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '~/components/ui/select'
+import type { Weapon } from '~/types/weapon'
 
-defineProps<{
-  id: string;
-  modelValue: string;
-  weapons: Weapon[];
-}>();
+const props = defineProps<{
+  id: string
+  modelValue: string
+  weapons: Weapon[]
+}>()
 
-const emit = defineEmits(['update:modelValue']);
-const selectedWeapon = ref('');
+const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
+const selectedWeapon = ref(props.modelValue || '')
+
+watch(() => props.modelValue, (newVal) => {
+  selectedWeapon.value = newVal || ''
+}, { immediate: true })
 
 watch(selectedWeapon, (newValue) => {
-  emit('update:modelValue', newValue);
-});
+  emit('update:modelValue', newValue)
+})
 </script>

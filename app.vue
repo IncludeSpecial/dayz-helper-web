@@ -1,14 +1,15 @@
 <template>
-<NuxtLoadingIndicator/>
-
+  <VitePwaManifest />
+  <NuxtLoadingIndicator />
   <NuxtLayout>
-<Analytics/>
+    <PwaInstallPrompt />
+    <Analytics />
+    <SpeedInsights />
     <NuxtPage />
   </NuxtLayout>
-
 </template>
+
 <script setup lang="ts">
-import { Analytics } from '@vercel/analytics/nuxt';
-import { inject } from '@vercel/analytics'
-inject()
+import { Analytics } from '@vercel/analytics/nuxt'
+import { SpeedInsights } from '@vercel/speed-insights/nuxt'
 </script>
